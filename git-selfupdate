@@ -1,5 +1,6 @@
 #!/bin/bash
 
+export PATH=/usr/local/bin:/usr/bin:/bin
 export CurrPrefix=`which git | sed -e 's/\/bin\/git//' | sed -e 's/\/libexec.*//'`
 export TmpDirectory="$HOME/git_`date +%d%m%Y`"
 
