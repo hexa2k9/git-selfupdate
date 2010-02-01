@@ -1,0 +1,7 @@
+h1. git-selfupdate
+
+p. update a currently installed version of git using git itself to get the source. i use this on some outdated debian servers which can't be upgraded to lenny. git packages from etch are outdated ..
+
+p. on a shell (as root):
+# curl http://github.com/hexa2k9/git-selfupdate/raw/master/git-selfupdate > /usr/local/bin/git-selfupdate
+# chmod u+x /usr/local/bin/git-selfupdate
