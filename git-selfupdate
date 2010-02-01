@@ -19,12 +19,24 @@ cd git
 
 echo "Building Git. Please be patient .."
 make prefix=$CurrPrefix all doc > $TmpDirectory/make.out 2>&1
+export MakeStatus=${?}
 
 echo "Installing Git. Please be patient .."
 make prefix=$CurrPrefix install install-doc install-html > $TmpDirectory/make_install.out 2>&1
+export InstallStatus=${?}
 
-cd $HOME
-rm -rf $TmpDirectory
+if [ $MakeStatus -eq 0 ] && [ $InstallStatus -eq 0 ]; then
+  export GitVersion=`git --version | cut -d" " -f3`
+  echo "All done! Git updated to version $GitVersion"
 
-export GitVersion=`git --version | cut -d" " -f3`
-echo "All done! Git updated to version $GitVersion"
+  echo "Cleaning up .."
+  cd $HOME
+  rm -rf $TmpDirectory
+else
+  echo "#Fail! Something went wrong. Here are the last 5 lines of our Logs:"
+  echo "### Log from building Git:"
+  tail -5 $TmpDirectory/make.out
+
+  echo "### Log from installing Git:"
+  tail -5 $TmpDirectory/make_install.out
+fi
