@@ -1,0 +1,30 @@
+#!/bin/bash
+
+export CurrPrefix=`which git | sed -e 's/\/bin\/git//' | sed -e 's/\/libexec.*//'`
+export TmpDirectory="$HOME/git_`date +%d%m%Y`"
+
+mkdir -p $TmpDirectory 2>/dev/null
+
+if [ -d $TmpDirectory ] ; then
+  cd $TmpDirectory
+else
+  echo "#Fail! Can't change to $TmpDirectory. Exiting .."
+  exit 99
+fi
+
+echo "Downloading latest Git Source."
+git clone git://git.kernel.org/pub/scm/git/git.git > $TmpDirectory/git_clone.out 2>&1
+
+cd git
+
+echo "Building Git. Please be patient .."
+make prefix=$CurrPrefix all doc > $TmpDirectory/make.out 2>&1
+
+echo "Installing Git. Please be patient .."
+make prefix=$CurrPrefix install install-doc install-html > $TmpDirectory/make_install.out 2>&1
+
+cd $HOME
+rm -rf $TmpDirectory
+
+export GitVersion=`git --version | cut -d" " -f3`
+echo "All done! Git updated to version $GitVersion"
