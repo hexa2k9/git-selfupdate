@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 export PATH=/usr/local/bin:/usr/bin:/bin
 export CurrPrefix=`which git | sed -e 's/\/bin\/git//' | sed -e 's/\/libexec.*//'`
@@ -18,13 +18,26 @@ git clone git://git.kernel.org/pub/scm/git/git.git > $TmpDirectory/git_clone.out
 
 cd git
 
-echo "Building Git. Please be patient .."
-make prefix=$CurrPrefix all doc > $TmpDirectory/make.out 2>&1
-export MakeStatus=${?}
+if [ -e GIT-VERSION-GEN ]; then
+  sh ./GIT-VERSION-GEN
+  export CheckGitVersion=`cat GIT-VERSION-FILE | cut -d"=" -f2 | sed -e 's/ //'`
+  export CurrGitVersion=`git --version|cut -d" " -f3`
+fi
 
-echo "Installing Git. Please be patient .."
-make prefix=$CurrPrefix install install-doc install-html > $TmpDirectory/make_install.out 2>&1
-export InstallStatus=${?}
+if [ $CheckGitVersion = $CurrGitVersion ]; then
+  echo "We're already at latest Git Version ($CheckGitVersion). No need to update."
+  export MakeStatus=0
+  export InstallStatus=0
+else
+  echo "We've downloaded $CheckGitVersion, our version is $CurrGitVersion. Starting update now."
+  echo "Building Git. Please be patient .."
+  make prefix=$CurrPrefix all doc > $TmpDirectory/make.out 2>&1
+  export MakeStatus=${?}
+
+  echo "Installing Git. Please be patient .."
+  make prefix=$CurrPrefix install install-doc install-html > $TmpDirectory/make_install.out 2>&1
+  export InstallStatus=${?}
+fi
 
 if [ $MakeStatus -eq 0 ] && [ $InstallStatus -eq 0 ]; then
   export GitVersion=`git --version | cut -d" " -f3`
