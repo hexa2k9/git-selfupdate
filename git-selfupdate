@@ -21,7 +21,7 @@ cd git
 if [ -e GIT-VERSION-GEN ]; then
   sh ./GIT-VERSION-GEN
   export CheckGitVersion=`cat GIT-VERSION-FILE | cut -d"=" -f2 | sed -e 's/ //'`
-  export CurrGitVersion=`git --version|cut -d" " -f3`
+  export CurrGitVersion=`git --version | cut -d" " -f3`
 fi
 
 if [ $CheckGitVersion = $CurrGitVersion ]; then
