@@ -5,3 +5,4 @@ p. update a currently installed version of git using git itself to get the sourc
 p. on a shell (as root):
 # curl http://github.com/hexa2k9/git-selfupdate/raw/master/git-selfupdate > /usr/local/bin/git-selfupdate
 # chmod u+x /usr/local/bin/git-selfupdate
+
